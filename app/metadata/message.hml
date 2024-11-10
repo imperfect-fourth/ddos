@@ -9,15 +9,18 @@ definition:
       type: String
       description: No description available
     - name: ts
-      type: String
-      description: No description available
-    - name: user
-      type: String
-      description: No description available
-    - name: channel
-      type: String
+      type: Float
       description: No description available
     - name: thread_ts
+      type: Float
+      description: No description available
+    - name: link
+      type: String
+      description: No description available
+    - name: channel_id
+      type: String
+      description: No description available
+    - name: user_id
       type: String
       description: No description available
   graphql:
@@ -38,9 +41,10 @@ definition:
         allowedFields:
           - text
           - ts
-          - user
-          - channel
           - thread_ts
+          - link
+          - channel_id
+          - user_id
 
 ---
 kind: BooleanExpressionType
@@ -54,12 +58,14 @@ definition:
         - fieldName: text
           booleanExpressionType: StringBoolExp
         - fieldName: ts
-          booleanExpressionType: StringBoolExp
-        - fieldName: user
-          booleanExpressionType: StringBoolExp
-        - fieldName: channel
-          booleanExpressionType: StringBoolExp
+          booleanExpressionType: Float_bool_exp
         - fieldName: thread_ts
+          booleanExpressionType: Float_bool_exp
+        - fieldName: link
+          booleanExpressionType: StringBoolExp
+        - fieldName: channel_id
+          booleanExpressionType: StringBoolExp
+        - fieldName: user_id
           booleanExpressionType: StringBoolExp
       comparableRelationships: []
   logicalOperators:
@@ -81,12 +87,14 @@ definition:
         - fieldName: text
           aggregateExpression: StringAggExp
         - fieldName: ts
-          aggregateExpression: StringAggExp
-        - fieldName: user
-          aggregateExpression: StringAggExp
-        - fieldName: channel
-          aggregateExpression: StringAggExp
+          aggregateExpression: Float_agg_exp
         - fieldName: thread_ts
+          aggregateExpression: Float_agg_exp
+        - fieldName: link
+          aggregateExpression: StringAggExp
+        - fieldName: channel_id
+          aggregateExpression: StringAggExp
+        - fieldName: user_id
           aggregateExpression: StringAggExp
   count:
     enable: true
@@ -111,13 +119,16 @@ definition:
     - fieldName: ts
       orderByDirections:
         enableAll: true
-    - fieldName: user
-      orderByDirections:
-        enableAll: true
-    - fieldName: channel
-      orderByDirections:
-        enableAll: true
     - fieldName: thread_ts
+      orderByDirections:
+        enableAll: true
+    - fieldName: link
+      orderByDirections:
+        enableAll: true
+    - fieldName: channel_id
+      orderByDirections:
+        enableAll: true
+    - fieldName: user_id
       orderByDirections:
         enableAll: true
   graphql:

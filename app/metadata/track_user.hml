@@ -1,0 +1,26 @@
+---
+kind: Command
+version: v1
+definition:
+  name: track_user
+  outputType: String!
+  arguments:
+    - name: user_id
+      type: String!
+  source:
+    dataConnectorName: slack
+    dataConnectorCommand:
+      procedure: track_user
+  graphql:
+    rootFieldName: track_user
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: track_user
+  permissions:
+    - role: admin
+      allowExecution: true
+

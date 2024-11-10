@@ -6,6 +6,9 @@ definition:
   description: No description available
   fields:
     - name: ts
+      type: Float
+      description: No description available
+    - name: channel_id
       type: String
       description: No description available
   graphql:
@@ -25,6 +28,7 @@ definition:
       output:
         allowedFields:
           - ts
+          - channel_id
 
 ---
 kind: BooleanExpressionType
@@ -36,6 +40,8 @@ definition:
       type: thread
       comparableFields:
         - fieldName: ts
+          booleanExpressionType: Float_bool_exp
+        - fieldName: channel_id
           booleanExpressionType: StringBoolExp
       comparableRelationships: []
   logicalOperators:
@@ -55,6 +61,8 @@ definition:
       aggregatedType: thread
       aggregatableFields:
         - fieldName: ts
+          aggregateExpression: Float_agg_exp
+        - fieldName: channel_id
           aggregateExpression: StringAggExp
   count:
     enable: true
@@ -74,6 +82,9 @@ definition:
   aggregateExpression: thread_agg_exp
   orderableFields:
     - fieldName: ts
+      orderByDirections:
+        enableAll: true
+    - fieldName: channel_id
       orderByDirections:
         enableAll: true
   graphql:

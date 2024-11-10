@@ -96,3 +96,55 @@ definition:
   graphql:
     selectTypeName: Boolean_agg_exp
 
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Float_bool_exp
+  operand:
+    scalar:
+      type: Float
+      comparisonOperators:
+        - name: _eq
+          argumentType: Float!
+        - name: _gt
+          argumentType: Float!
+        - name: _gte
+          argumentType: Float!
+        - name: _lt
+          argumentType: Float!
+        - name: _lte
+          argumentType: Float!
+        - name: _neq
+          argumentType: Float!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: slack
+          dataConnectorScalarType: Float
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Float_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: Float_agg_exp
+  operand:
+    scalar:
+      aggregatedType: Float
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: slack
+          dataConnectorScalarType: Float
+          functionMapping: {}
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Float_agg_exp
+

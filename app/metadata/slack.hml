@@ -203,7 +203,14 @@ definition:
         message:
           description: No description available
           fields:
-            channel:
+            channel_id:
+              description: No description available
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: String
+            link:
               description: No description available
               type:
                 type: nullable
@@ -223,15 +230,15 @@ definition:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: String
+                  name: Float
             ts:
               description: No description available
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: String
-            user:
+                  name: Float
+            user_id:
               description: No description available
               type:
                 type: nullable
@@ -241,13 +248,20 @@ definition:
         thread:
           description: No description available
           fields:
-            ts:
+            channel_id:
               description: No description available
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: String
+            ts:
+              description: No description available
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Float
         user:
           description: No description available
           fields:
@@ -312,7 +326,16 @@ definition:
           uniqueness_constraints: {}
           foreign_keys: {}
       functions: []
-      procedures: []
+      procedures:
+        - name: track_user
+          arguments:
+            user_id:
+              type:
+                type: named
+                name: String
+          result_type:
+            type: named
+            name: String
     capabilities:
       version: 0.1.6
       capabilities:
