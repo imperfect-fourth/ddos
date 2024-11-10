@@ -1,0 +1,142 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: message
+  description: No description available
+  fields:
+    - name: text
+      type: String
+      description: No description available
+    - name: ts
+      type: String
+      description: No description available
+    - name: user
+      type: String
+      description: No description available
+    - name: channel
+      type: String
+      description: No description available
+    - name: thread_ts
+      type: String
+      description: No description available
+  graphql:
+    typeName: message
+    inputTypeName: message_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: slack
+      dataConnectorObjectType: message
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: message
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - text
+          - ts
+          - user
+          - channel
+          - thread_ts
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: message_bool_exp
+  operand:
+    object:
+      type: message
+      comparableFields:
+        - fieldName: text
+          booleanExpressionType: StringBoolExp
+        - fieldName: ts
+          booleanExpressionType: StringBoolExp
+        - fieldName: user
+          booleanExpressionType: StringBoolExp
+        - fieldName: channel
+          booleanExpressionType: StringBoolExp
+        - fieldName: thread_ts
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: message_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: message_agg_exp
+  operand:
+    object:
+      aggregatedType: message
+      aggregatableFields:
+        - fieldName: text
+          aggregateExpression: StringAggExp
+        - fieldName: ts
+          aggregateExpression: StringAggExp
+        - fieldName: user
+          aggregateExpression: StringAggExp
+        - fieldName: channel
+          aggregateExpression: StringAggExp
+        - fieldName: thread_ts
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: message_agg_exp
+
+---
+kind: Model
+version: v1
+definition:
+  name: message
+  objectType: message
+  source:
+    dataConnectorName: slack
+    collection: message
+  filterExpressionType: message_bool_exp
+  aggregateExpression: message_agg_exp
+  orderableFields:
+    - fieldName: text
+      orderByDirections:
+        enableAll: true
+    - fieldName: ts
+      orderByDirections:
+        enableAll: true
+    - fieldName: user
+      orderByDirections:
+        enableAll: true
+    - fieldName: channel
+      orderByDirections:
+        enableAll: true
+    - fieldName: thread_ts
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: message
+    selectUniques: []
+    orderByExpressionType: message_order_by
+    filterInputTypeName: message_filter_input
+    aggregate:
+      queryRootField: message_aggregate
+  description: No description available
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: message
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

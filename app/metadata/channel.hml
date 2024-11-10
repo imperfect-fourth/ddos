@@ -1,0 +1,109 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: channel
+  description: No description available
+  fields:
+    - name: id
+      type: String
+      description: No description available
+    - name: name
+      type: String
+      description: No description available
+  graphql:
+    typeName: channel
+    inputTypeName: channel_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: slack
+      dataConnectorObjectType: channel
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: channel
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: channel_bool_exp
+  operand:
+    object:
+      type: channel
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: StringBoolExp
+        - fieldName: name
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: channel_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: channel_agg_exp
+  operand:
+    object:
+      aggregatedType: channel
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: StringAggExp
+        - fieldName: name
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: channel_agg_exp
+
+---
+kind: Model
+version: v1
+definition:
+  name: channel
+  objectType: channel
+  source:
+    dataConnectorName: slack
+    collection: channel
+  filterExpressionType: channel_bool_exp
+  aggregateExpression: channel_agg_exp
+  orderableFields:
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: name
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: channel
+    selectUniques: []
+    orderByExpressionType: channel_order_by
+    filterInputTypeName: channel_filter_input
+    aggregate:
+      queryRootField: channel_aggregate
+  description: No description available
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: channel
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

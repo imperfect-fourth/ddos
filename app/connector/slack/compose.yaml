@@ -1,0 +1,16 @@
+services:
+  app_slack:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile
+    environment:
+      DUCKDB_URL: $APP_SLACK_DUCKDB_URL
+      FEATURE_MIN_INSTANCES: $APP_SLACK_FEATURE_MIN_INSTANCES
+      FEATURE_PERSISTENT_DATA: $APP_SLACK_FEATURE_PERSISTENT_DATA
+      HASURA_SERVICE_TOKEN_SECRET: $APP_SLACK_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $APP_SLACK_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $APP_SLACK_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 6882:8080

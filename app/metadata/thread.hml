@@ -1,0 +1,98 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: thread
+  description: No description available
+  fields:
+    - name: ts
+      type: String
+      description: No description available
+  graphql:
+    typeName: thread
+    inputTypeName: thread_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: slack
+      dataConnectorObjectType: thread
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: thread
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ts
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: thread_bool_exp
+  operand:
+    object:
+      type: thread
+      comparableFields:
+        - fieldName: ts
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: thread_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: thread_agg_exp
+  operand:
+    object:
+      aggregatedType: thread
+      aggregatableFields:
+        - fieldName: ts
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: thread_agg_exp
+
+---
+kind: Model
+version: v1
+definition:
+  name: thread
+  objectType: thread
+  source:
+    dataConnectorName: slack
+    collection: thread
+  filterExpressionType: thread_bool_exp
+  aggregateExpression: thread_agg_exp
+  orderableFields:
+    - fieldName: ts
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: thread
+    selectUniques: []
+    orderByExpressionType: thread_order_by
+    filterInputTypeName: thread_filter_input
+    aggregate:
+      queryRootField: thread_aggregate
+  description: No description available
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: thread
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

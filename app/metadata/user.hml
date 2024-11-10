@@ -1,0 +1,142 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: user
+  description: No description available
+  fields:
+    - name: id
+      type: String
+      description: No description available
+    - name: is_bot
+      type: Boolean
+      description: No description available
+    - name: username
+      type: String
+      description: No description available
+    - name: real_name
+      type: String
+      description: No description available
+    - name: display_name
+      type: String
+      description: No description available
+  graphql:
+    typeName: user
+    inputTypeName: user_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: slack
+      dataConnectorObjectType: user
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: user
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - is_bot
+          - username
+          - real_name
+          - display_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: user_bool_exp
+  operand:
+    object:
+      type: user
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: StringBoolExp
+        - fieldName: is_bot
+          booleanExpressionType: Boolean_bool_exp
+        - fieldName: username
+          booleanExpressionType: StringBoolExp
+        - fieldName: real_name
+          booleanExpressionType: StringBoolExp
+        - fieldName: display_name
+          booleanExpressionType: StringBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: user_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: user_agg_exp
+  operand:
+    object:
+      aggregatedType: user
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: StringAggExp
+        - fieldName: is_bot
+          aggregateExpression: Boolean_agg_exp
+        - fieldName: username
+          aggregateExpression: StringAggExp
+        - fieldName: real_name
+          aggregateExpression: StringAggExp
+        - fieldName: display_name
+          aggregateExpression: StringAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: user_agg_exp
+
+---
+kind: Model
+version: v1
+definition:
+  name: user
+  objectType: user
+  source:
+    dataConnectorName: slack
+    collection: user
+  filterExpressionType: user_bool_exp
+  aggregateExpression: user_agg_exp
+  orderableFields:
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: is_bot
+      orderByDirections:
+        enableAll: true
+    - fieldName: username
+      orderByDirections:
+        enableAll: true
+    - fieldName: real_name
+      orderByDirections:
+        enableAll: true
+    - fieldName: display_name
+      orderByDirections:
+        enableAll: true
+  graphql:
+    selectMany:
+      queryRootField: user
+    selectUniques: []
+    orderByExpressionType: user_order_by
+    filterInputTypeName: user_filter_input
+    aggregate:
+      queryRootField: user_aggregate
+  description: No description available
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: user
+  permissions:
+    - role: admin
+      select:
+        filter: null
+

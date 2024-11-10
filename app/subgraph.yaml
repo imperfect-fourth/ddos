@@ -1,0 +1,19 @@
+kind: Subgraph
+version: v2
+definition:
+  name: app
+  generator:
+    rootPath: .
+    namingConvention: none
+  includePaths:
+    - metadata
+  envMapping:
+    APP_SLACK_AUTHORIZATION_HEADER:
+      fromEnv: APP_SLACK_AUTHORIZATION_HEADER
+    APP_SLACK_READ_URL:
+      fromEnv: APP_SLACK_READ_URL
+    APP_SLACK_WRITE_URL:
+      fromEnv: APP_SLACK_WRITE_URL
+  connectors:
+    - path: connector/slack/connector.yaml
+      connectorLinkName: slack
