@@ -139,7 +139,7 @@ async function load_tracked_users() {
       await load_messages_from_user(key);
       tracked_users.set(key, tracked_until);
     });
-  }, 1000000);
+  }, 60000);
 }
 
 (async () => {
@@ -316,23 +316,21 @@ async function load_thread(msg: Message) {
   } else {
       console.log("adding new thread");
     await db.all(`
-      Insert into thread (ts, channel_id, reply_count)
+      Insert into thread (ts, channel_id)
       Values (
           ?::TEXT,
           ?::TEXT,
-          ?::INT,
       )`,
       thread_ts,
       msg.channel_id,
-      th[0]["reply_count"],
     );
       console.log("added new thread");
   }
   const threadStruct: Thread = {
     ts: thread_ts,
     channel_id: msg.channel_id,
-    reply_count: th[0]["reply_count"],
-  }
+    reply_count: 0,
+  };
 
   var next_cursor = await getThread(threadStruct, "");
   while (true) {
@@ -368,6 +366,14 @@ async function getThread(thread: Thread, cursor: string) {
     if (!response.data["messages"] || response.data["messages"].length == 0) {
         console.log("no messages in thread");
         return "";
+    }
+    if (cursor === "") {
+      const reply_count = response.data["messages"][0]["reply_count"];
+      db.all(`
+        update thread
+        set reply_count = ?::INT
+        where ts = ?::DOUBLE;
+      `, reply_count, thread.ts);
     }
     console.log(response.data["messages"].length);
     response.data["messages"].forEach( async (mesg: any) => {

@@ -255,6 +255,13 @@ definition:
                 underlying_type:
                   type: named
                   name: String
+            reply_count:
+              description: No description available
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Int
             ts:
               description: No description available
               type:

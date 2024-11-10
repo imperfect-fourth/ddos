@@ -11,6 +11,9 @@ definition:
     - name: channel_id
       type: String
       description: No description available
+    - name: reply_count
+      type: Int
+      description: No description available
   graphql:
     typeName: thread
     inputTypeName: thread_input
@@ -29,6 +32,7 @@ definition:
         allowedFields:
           - ts
           - channel_id
+          - reply_count
 
 ---
 kind: BooleanExpressionType
@@ -43,6 +47,8 @@ definition:
           booleanExpressionType: Float_bool_exp
         - fieldName: channel_id
           booleanExpressionType: StringBoolExp
+        - fieldName: reply_count
+          booleanExpressionType: Int_bool_exp
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -64,6 +70,8 @@ definition:
           aggregateExpression: Float_agg_exp
         - fieldName: channel_id
           aggregateExpression: StringAggExp
+        - fieldName: reply_count
+          aggregateExpression: Int_agg_exp
   count:
     enable: true
   graphql:
@@ -85,6 +93,9 @@ definition:
       orderByDirections:
         enableAll: true
     - fieldName: channel_id
+      orderByDirections:
+        enableAll: true
+    - fieldName: reply_count
       orderByDirections:
         enableAll: true
   graphql:
