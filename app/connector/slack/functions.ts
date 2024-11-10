@@ -1,4 +1,6 @@
 import * as sdk from "@hasura/ndc-lambda-sdk"
+import { getDB } from "@hasura/ndc-duckduckapi";
+import { load_threads_for_user, load_messages_from_user } from "./index";
 //import * as fs from 'fs';
 //
 //export function setCurrentUser(id: string) {
@@ -33,14 +35,22 @@ import * as sdk from "@hasura/ndc-lambda-sdk"
 //}
 //
 
-export var tracked_users: Map<string, number>;
-const seconds_in_week = 604800;
+export var tracked_users: Map<string, number> = new Map();
+export const seconds_in_week = 604800*2;
 
-export function track_user(user_id: string) {
-  var user = await db.all(`SELECT display_name as display_name FROM user where id=?::TEXT`, uesr_id);
+export async function track_user(user_id: string) {
+  const db = await getDB();
+  var user = await db.all(`SELECT display_name as display_name FROM user where id=?::TEXT`, user_id);
   if (user.length !== 0) {
-      tracked_users.set(user["display_name"], Date.now()-seconds_in_week);
+      var display_name =  user[0]["display_name"];
+      if ((tracked_users.get(display_name) ?? 0) !== 0) {
+        throw new sdk.UnprocessableContent(`user with id ${user_id} is already tracked`);
+      }
+      tracked_users.set(display_name, (Date.now()/1000)-seconds_in_week);
+      load_threads_for_user(display_name);
+      //load_messages_from_user(display_name);
+      return `tracking user ${display_name}. loading the messages will take a couple of minutes.`;
   } else {
-      throw new sdk.UnprocessableContent(`user with id ${user_id} doesn't exist.`);
+      throw new sdk.UnprocessableContent(`user with id ${user_id} doesn't exist`);
   }
 }
