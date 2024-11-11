@@ -1,6 +1,6 @@
 import * as sdk from "@hasura/ndc-lambda-sdk"
 import { getDB } from "@hasura/ndc-duckduckapi";
-import { load_threads_for_user, load_messages_from_user } from "./index";
+import { load_threads_for_user, load_messages_from_user, load_messages_in_channel } from "./index";
 //import * as fs from 'fs';
 //
 //export function setCurrentUser(id: string) {
@@ -36,6 +36,7 @@ import { load_threads_for_user, load_messages_from_user } from "./index";
 //
 
 export var tracked_users: Map<string, number> = new Map();
+export var tracked_channels: Map<string, number> = new Map();
 export const seconds_in_week = 604800*2;
 
 export async function track_user(user_id: string) {
@@ -54,5 +55,23 @@ export async function track_user(user_id: string) {
       return `tracking user ${display_name}. loading the messages will take a couple of minutes.`;
   } else {
       throw new sdk.UnprocessableContent(`user with id ${user_id} doesn't exist`);
+  }
+}
+
+export async function track_channel(channel_id: string) {
+  const db = await getDB();
+  var channel = await db.all(`SELECT name FROM user where id=?::VARCHAR`, channel_id);
+  if (channel.length !== 0) {
+      var channel_name =  channel[0]["name"];
+      if ((tracked_channels.get(channel_name) ?? 0) !== 0) {
+        throw new sdk.UnprocessableContent(`channel with id ${channel_id} is already tracked`);
+      }
+      tracked_channels.set(channel_name, (Date.now()/1000)-seconds_in_week);
+//      await db.all('BEGIN TRANSACTION;');
+      load_messages_in_channel(channel_name);
+//      await db.all('COMMIT');
+      return `tracking channel ${channel_name}. loading the messages will take a couple of minutes.`;
+  } else {
+      throw new sdk.UnprocessableContent(`channel with id ${channel_id} doesn't exist`);
   }
 }

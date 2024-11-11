@@ -3,7 +3,7 @@ import { start } from "@hasura/ndc-duckduckapi";
 import { makeConnector, duckduckapi, getDB } from "@hasura/ndc-duckduckapi";
 import * as path from "path";
 import axios from 'axios';
-import { tracked_users, seconds_in_week } from './functions';
+import { tracked_users, tracked_channels, seconds_in_week } from './functions';
 
 var headers = { Authorization: "" };
 
@@ -147,6 +147,42 @@ async function load_tracked_users() {
   }, 60000);
 }
 
+async function load_messages_in_channel_helper(channel_name: string, cursor: string) {
+  return await search_query(`in:${channel_name}`, tracked_channels.get(channel_name) ?? Date.now() - seconds_in_week, cursor) 
+}
+
+export async function load_messages_in_channel(channel_name: string) {
+  console.log("loading threads");
+  var next_cursor = '*';
+  while (true) {
+    if (next_cursor === undefined) {
+        break;
+    }
+    if (next_cursor === null) {
+      break;
+    }
+    if (next_cursor === "") {
+      break;
+    }
+    await sleep(1000);
+    next_cursor = await load_messages_in_channel_helper(channel_name, next_cursor);
+    console.log(next_cursor);
+  }
+}
+
+async function load_tracked_channels() {
+  setInterval(async () => {
+    tracked_users.forEach(async (val, key) => {
+      const db = await getDB();
+//      await db.all('BEGIN TRANSACTION;');
+      var tracked_until = Date.now();
+      await load_messages_in_channel(key);
+//      await db.all('COMMIT');
+      tracked_channels.set(key, tracked_until);
+    });
+  }, 60000);
+}
+
 (async () => {
   const connector = await makeConnector(connectorConfig);
   start(connector);
@@ -158,6 +194,7 @@ async function load_tracked_users() {
 
   await load_users();
   load_tracked_users();
+  load_tracked_channels();
 })();
 
 type Thread = {
@@ -329,12 +366,11 @@ async function load_thread(msg: Message) {
           ?::TEXT,
           ?::TEXT,
       ) ON CONFLICT DO NOTHING;
-    `);
+    `,
       thread_ts,
       msg.channel_id,
     );
       console.log("added new thread");
-  }
   const threadStruct: Thread = {
     ts: thread_ts,
     channel_id: msg.channel_id,
