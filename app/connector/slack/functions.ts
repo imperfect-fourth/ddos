@@ -58,20 +58,14 @@ export async function track_user(user_id: string) {
   }
 }
 
-export async function track_channel(channel_id: string) {
+export async function track_channel(channel_name: string) {
   const db = await getDB();
-  var channel = await db.all(`SELECT name FROM user where id=?::VARCHAR`, channel_id);
-  if (channel.length !== 0) {
-      var channel_name =  channel[0]["name"];
-      if ((tracked_channels.get(channel_name) ?? 0) !== 0) {
-        throw new sdk.UnprocessableContent(`channel with id ${channel_id} is already tracked`);
-      }
-      tracked_channels.set(channel_name, (Date.now()/1000)-seconds_in_week);
-//      await db.all('BEGIN TRANSACTION;');
-      load_messages_in_channel(channel_name);
-//      await db.all('COMMIT');
-      return `tracking channel ${channel_name}. loading the messages will take a couple of minutes.`;
-  } else {
-      throw new sdk.UnprocessableContent(`channel with id ${channel_id} doesn't exist`);
+  if ((tracked_channels.get(channel_name) ?? 0) !== 0) {
+    throw new sdk.UnprocessableContent(`channel with id ${channel_name} is already tracked`);
   }
+  tracked_channels.set(channel_name, (Date.now()/1000)-seconds_in_week);
+//  await db.all('BEGIN TRANSACTION;');
+  load_messages_in_channel(channel_name);
+//  await db.all('COMMIT');
+  return `tracking channel ${channel_name}. loading the messages will take a couple of minutes.`;
 }

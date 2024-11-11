@@ -5,7 +5,7 @@ definition:
   name: track_channel
   outputType: String!
   arguments:
-    - name: channel_id
+    - name: channel_name
       type: String!
   source:
     dataConnectorName: slack

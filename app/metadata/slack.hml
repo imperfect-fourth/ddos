@@ -352,7 +352,7 @@ definition:
             name: String
         - name: track_channel
           arguments:
-            channel_id:
+            channel_name:
               type:
                 type: named
                 name: String

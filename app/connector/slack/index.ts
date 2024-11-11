@@ -16,23 +16,23 @@ const connectorConfig: duckduckapi = {
     -- DROP TABLE IF EXISTS thread;
     -- DROP TABLE IF EXISTS channel;
     -- DROP TABLE IF EXISTS user;
-    CREATE TABLE channel (
+    CREATE TABLE if not exists channel (
         id varchar primary key,
         name text,
     );
-    CREATE TABLE  user (
+    CREATE TABLE  if not exists  user (
         id text primary key,
         username text,
         is_bot bool,
         real_name text,
         display_name text,
     );
-    CREATE TABLE  thread (
+    CREATE TABLE   if not exists thread (
         ts double primary key,
         channel_id varchar references channel(id),
         reply_count int,
     );
-    CREATE TABLE message (
+    CREATE TABLE  if not exists message (
         ts double primary key,
         text text,
         user_id varchar references user(id),
@@ -46,6 +46,7 @@ const connectorConfig: duckduckapi = {
 };
 
 async function search_query(query: string, till_timestamp: number, cursor: string) {
+    console.log("searching", query);
   try {
     const db = await getDB();
     const searchURL = "https://slack.com/api/search.messages";
@@ -73,9 +74,7 @@ async function search_query(query: string, till_timestamp: number, cursor: strin
         link: "",
         by_bot: false,
       };
-      console.log("adding channel");
       await insert_channel(msg["channel"]["id"], msg["channel"]["name"]);
-      console.log("added channel");
       await load_thread(msgStruct);
     }
     if (response.data["response_metadata"]) {
@@ -355,11 +354,11 @@ async function load_thread(msg: Message) {
       console.log("invalid thread.");
       return;
   }
-      console.log("adding new thread");
   var th  = await db.all(`SELECT ts as ts FROM thread where ts=?::DOUBLE`, thread_ts)
   if (th.length != 0) {
       return "";
   }
+      console.log("adding new thread");
     await db.all(`
       Insert into thread (ts, channel_id)
       Values (
