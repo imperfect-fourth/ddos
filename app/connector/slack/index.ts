@@ -137,11 +137,11 @@ async function load_tracked_users() {
   setInterval(async () => {
     tracked_users.forEach(async (val, key) => {
       const db = await getDB();
-      await db.all('BEGIN TRANSACTION;');
+//      await db.all('BEGIN TRANSACTION;');
       var tracked_until = Date.now();
       await load_threads_for_user(key);
       await load_messages_from_user(key);
-      await db.all('COMMIT');
+//      await db.all('COMMIT');
       tracked_users.set(key, tracked_until);
     });
   }, 60000);

@@ -47,10 +47,10 @@ export async function track_user(user_id: string) {
         throw new sdk.UnprocessableContent(`user with id ${user_id} is already tracked`);
       }
       tracked_users.set(display_name, (Date.now()/1000)-seconds_in_week);
-      await db.all('BEGIN TRANSACTION;');
+//      await db.all('BEGIN TRANSACTION;');
       load_threads_for_user(display_name);
       load_messages_from_user(display_name);
-      await db.all('COMMIT');
+//      await db.all('COMMIT');
       return `tracking user ${display_name}. loading the messages will take a couple of minutes.`;
   } else {
       throw new sdk.UnprocessableContent(`user with id ${user_id} doesn't exist`);
