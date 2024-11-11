@@ -352,6 +352,7 @@ async function load_thread(msg: Message) {
   const thread_ts = response.data["messages"][0]["thread_ts"];
   if(!thread_ts) {
       console.log("invalid thread.");
+      console.log(response.data);
       return;
   }
   var th  = await db.all(`SELECT ts as ts FROM thread where ts=?::DOUBLE`, thread_ts)
