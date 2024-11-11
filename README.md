@@ -13,7 +13,7 @@ don't need my attention, which are waiting for my input, etc.
 Of course, this is not the only thing you can do with ddos. Look at examples 
 below for more situations where ddos will prove to be a handy companion.
 
-[Cloud Project](https://console.hasura.io/project/premium-moth-8330)
+[DDN Project](https://console.hasura.io/project/premium-moth-8330)
 
 ### Usage
 
