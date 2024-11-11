@@ -318,17 +318,18 @@ async function load_thread(msg: Message) {
       console.log("invalid thread.");
       return;
   }
+      console.log("adding new thread");
   var th  = await db.all(`SELECT ts as ts FROM thread where ts=?::DOUBLE`, thread_ts)
   if (th.length != 0) {
       return "";
-  } else {
-      console.log("adding new thread");
+  }
     await db.all(`
       Insert into thread (ts, channel_id)
       Values (
           ?::TEXT,
           ?::TEXT,
-      )`,
+      ) ON CONFLICT DO NOTHING;
+    `);
       thread_ts,
       msg.channel_id,
     );
