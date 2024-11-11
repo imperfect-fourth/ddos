@@ -203,6 +203,13 @@ definition:
         message:
           description: No description available
           fields:
+            by_bot:
+              description: No description available
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: Boolean
             channel_id:
               description: No description available
               type:

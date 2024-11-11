@@ -23,6 +23,9 @@ definition:
     - name: user_id
       type: String
       description: No description available
+    - name: by_bot
+      type: Boolean
+      description: No description available
   graphql:
     typeName: message
     inputTypeName: message_input
@@ -45,6 +48,7 @@ definition:
           - link
           - channel_id
           - user_id
+          - by_bot
 
 ---
 kind: BooleanExpressionType
@@ -67,6 +71,8 @@ definition:
           booleanExpressionType: StringBoolExp
         - fieldName: user_id
           booleanExpressionType: StringBoolExp
+        - fieldName: by_bot
+          booleanExpressionType: Boolean_bool_exp
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -96,6 +102,8 @@ definition:
           aggregateExpression: StringAggExp
         - fieldName: user_id
           aggregateExpression: StringAggExp
+        - fieldName: by_bot
+          aggregateExpression: Boolean_agg_exp
   count:
     enable: true
   graphql:
@@ -129,6 +137,9 @@ definition:
       orderByDirections:
         enableAll: true
     - fieldName: user_id
+      orderByDirections:
+        enableAll: true
+    - fieldName: by_bot
       orderByDirections:
         enableAll: true
   graphql:

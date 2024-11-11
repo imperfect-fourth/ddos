@@ -12,10 +12,10 @@ const connectorConfig: duckduckapi = {
   dbSchema: `
     -- Add your SQL schema here.
     -- This SQL will be run on startup every time.
-    DROP TABLE IF EXISTS message;
-    DROP TABLE IF EXISTS thread;
-    DROP TABLE IF EXISTS channel;
-    DROP TABLE IF EXISTS user;
+    -- DROP TABLE IF EXISTS message;
+    -- DROP TABLE IF EXISTS thread;
+    -- DROP TABLE IF EXISTS channel;
+    -- DROP TABLE IF EXISTS user;
     CREATE TABLE channel (
         id varchar primary key,
         name text,
@@ -39,6 +39,7 @@ const connectorConfig: duckduckapi = {
         channel_id varchar references channel(id),
         thread_ts double references thread(ts),
         link text,
+        by_bot bool,
     );
   `,
   functionsFilePath: path.resolve(__dirname, "./functions.ts"),
@@ -70,6 +71,7 @@ async function search_query(query: string, till_timestamp: number, cursor: strin
         channel_id: msg["channel"]["id"],
         thread_ts: 0,
         link: "",
+        by_bot: false,
       };
       console.log("adding channel");
       await insert_channel(msg["channel"]["id"], msg["channel"]["name"]);
@@ -87,7 +89,7 @@ async function search_query(query: string, till_timestamp: number, cursor: strin
 }
 
 async function load_messages_from_user_helper(user_display_name: string, cursor: string) {
-  return await search_query(`from:@${user_display_name}`, tracked_users.get(user_display_name) ?? (Date.now()/1000) - seconds_in_week, cursor) 
+  return await search_query(`from:<@${user_display_name}>`, tracked_users.get(user_display_name) ?? (Date.now()/1000) - seconds_in_week, cursor) 
 }
 
 export async function load_messages_from_user(user_display_name: string) {
@@ -168,13 +170,14 @@ type Message = {
     channel_id: string,
     thread_ts: number,
     link: string,
+    by_bot: boolean,
 }
 
 async function insert_message(msg: Message) {
   const db = await getDB();
   try {
     await db.all(`
-      INSERT INTO message (ts, text, user_id, channel_id, thread_ts, link)
+      INSERT INTO message (ts, text, user_id, channel_id, thread_ts, link, by_bot)
       VALUES (
           ?::TEXT,
           ?::TEXT,
@@ -182,6 +185,7 @@ async function insert_message(msg: Message) {
           ?::VARCHAR,
           ?::TEXT,
           ?::TEXT,
+          ?::BOOLEAN,
       ) ON CONFLICT DO NOTHING;`,
       msg.ts,
       msg.text,
@@ -189,6 +193,7 @@ async function insert_message(msg: Message) {
       msg.channel_id,
       msg.thread_ts,
       msg.link,
+      msg.by_bot,
     );
   } catch (err) {
     console.error('Error inserting data:', err);
@@ -384,6 +389,7 @@ async function getThread(thread: Thread, cursor: string) {
         text: mesg["text"],
         user_id: mesg["bot_id"] ? mesg["bot_id"] : mesg["user"],
         link: "",
+        by_bot: mesg["bot_id"] ? true : false,
       }
       msgStruct.link = construct_permalink(msgStruct);
       try {
