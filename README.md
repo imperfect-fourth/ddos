@@ -15,9 +15,9 @@ below for more situations where ddos will prove to be a handy companion.
 
 [DDN Project](https://console.hasura.io/project/premium-moth-8330)
 
-### Usage
+## Usage
 
-#### Track user
+### Track user
 
 - Get your(or anyone's) Slack user id from the Slack profile. It will look 
 something like: `U024C7E0UKE`
@@ -35,7 +35,7 @@ something like: `U024C7E0UKE`
 This will load all the threads this user has been tagged in or participated,
 and continue to periodically load new messages every 10 minutes.
 
-#### Track channel
+### Track channel
 
 - Run the following mutation
   ```graphql
@@ -49,7 +49,7 @@ This will load all the threads from the given channel, and continue to
 periodically load new messages every 10 minutes.
 
 
-#### Ask Away!
+## Ask Away!
 
 A few examples of the queries you can make:
 
