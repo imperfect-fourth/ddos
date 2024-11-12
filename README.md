@@ -39,8 +39,8 @@ and continue to periodically load new messages every 10 minutes.
 
 - Run the following mutation
   ```graphql
-  mutation TrackUser {
-    track_user(user_id: "<user_id>")
+  mutation TrackChannel {
+    track_channel(channel_name: "<channel_name>")
   }
   ```
 
